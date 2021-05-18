@@ -68,7 +68,7 @@
             },
             async getData() {
                 try {
-                    const ret = await axios.get(`${baseUrl}/api/${applyPath}/products`);
+                    const ret = await axios.get(`${baseUrl}/api/${applyPath}/admin/products`);
                     this.dataArray = ret.data.products;
                     this.render();
                 } catch (error) {
