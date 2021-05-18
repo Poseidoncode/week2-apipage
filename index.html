@@ -100,10 +100,10 @@
                             this.showToast('fail');
                         } else {
                             this.showToast('success');
-                            const token  = ret.data.token;
+                            const token = ret.data.token;
                             const expired = ret.data.expired;
-                            document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;                            
-                            setTimeout(()=>{ window.location.assign('/product.html'); }, 1500);
+                            document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
+                            setTimeout(() => { window.location.assign('/product.html'); }, 1500);
                         }
                     } catch (e) {
                         alert(e);
@@ -121,23 +121,18 @@
             });
             document.getElementById("username").addEventListener("keyup", event => {
                 if (event.keyCode === 13) {
-                  app.verify();   
-                  return;
+                    app.verify();
+                    return;
                 }
             });
-             document.getElementById("password").addEventListener("keyup", event => {
+            document.getElementById("password").addEventListener("keyup", event => {
                 if (event.keyCode === 13) {
-                  app.verify();   
-                  return;
+                    app.verify();
+                    return;
                 }
             });
 
         </script>
-
-
-
-
-
 </body>
 
 
