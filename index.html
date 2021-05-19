@@ -103,7 +103,7 @@
                             const token = ret.data.token;
                             const expired = ret.data.expired;
                             document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-                            setTimeout(() => { window.location.assign('product.html'); }, 1500);
+                            setTimeout(() => { window.location.assign('product.html'); }, 1000);
                         }
                     } catch (e) {
                         alert(e);

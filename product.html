@@ -76,12 +76,53 @@
                 }
             },
             render() {
-                console.log("render~~~~~~", this.dataArray);
-            }
+                const productListId = document.getElementById('productList');
+                const productCountId = document.getElementById('productCount');
+                let template = ""
+                this.dataArray.forEach(s => {
+                    template = template + `<tr>
+                    <td>${s.title}</td>
+                    <td width="120">
+                        ${s.origin_price}
+                    </td>
+                    <td width="120">
+                        ${s.price}
+                    </td>
+                    <td width="150">
+                        ${s.is_enabled == 1 ? '啟用' : '不啟用'}
+                    </td>
+                    <td width="120">
+                        <button type="button" class="btn btn-danger delete" 
+                        data-item="${s.id}"
+                        >刪除</button>
+                    </td>
+                </tr>`
+                });
+                productListId.innerHTML = template;
+                productCountId.innerHTML = this.dataArray.length;
+                this.setDeleteEvent();
+            },
+            setDeleteEvent() {
+                const deleteBtns = document.querySelectorAll('.delete');
+                deleteBtns.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const id = e.target.dataset.item
+                        this.deleteProduct(id)
+                    })
+                })
+            },
+            async deleteProduct(id) {
+                try {
+                    const ret = await axios.delete(`${baseUrl}/api/${applyPath}/admin/product/${id}`);
+                    this.getData();
+                } catch (error) {
+                    alert(error)
+                }
+            },
+
         }
-        window.onload = () => {
-            app.checkToken();
-        }
+        app.checkToken();
+
     </script>
 </body>
 
