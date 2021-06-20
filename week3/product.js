@@ -74,6 +74,7 @@ createApp({
         if (res.data.success) {
           this.getData();
           delProductModal.hide();
+          alert("刪除成功");
         } else {
           alert(res.data.message);
         }
