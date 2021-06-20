@@ -15,7 +15,7 @@
     <div id="app">
         <div class="container">
             <div class="text-end mt-4">
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" @click="openModal('new', item)">
                     建立新的產品
                 </button>
             </div>
@@ -41,26 +41,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="text-end"></td>
-                        <td class="text-end"></td>
+                    <tr v-for="(item, i) in products" :key="i">
+                        <td>{{item.category}}</td>
+                        <td>{{item.title}}</td>
+                        <td class="text-start">{{item.origin_price}}</td>
+                        <td class="text-start">{{item.price}}</td>
                         <td>
-                            <span class="text-success">啟用</span>
-                            <span>未啟用</span>
+                            <span class="text-success" v-if="item.is_enabled ==1">啟用</span>
+                            <span v-else>未啟用</span>
                         </td>
                         <td>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-outline-primary btn-sm">
+                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                    @click="openModal('edit', item)">
                                     編輯
                                 </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm">
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                    @click="openModal('delete', item)">
                                     刪除
                                 </button>
                             </div>
                         </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
@@ -176,7 +179,7 @@
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                             取消
                         </button>
-                        <button type="button" class="btn btn-danger">
+                        <button type="button" class="btn btn-danger" @click="delProduct">
                             確認刪除
                         </button>
                     </div>

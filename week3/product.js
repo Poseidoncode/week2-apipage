@@ -1,13 +1,13 @@
 import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js";
 
-let productModal = null;
-let delProductModal = null;
+let productModal = "";
+let delProductModal = "";
 
 createApp({
   data() {
     return {
-      apiUrl: "https://vue3-course-api.hexschool.io/api",
-      apiPath: "hexschoolvue",
+      baseUrl: "https://vue3-course-api.hexschool.io/api",
+      apiPath: "poseidon",
       products: [],
       isNew: false,
       tempProduct: {
@@ -16,16 +16,20 @@ createApp({
     };
   },
   methods: {
-    getData(page = 1) {
-      const url = `${this.apiUrl}/${this.apiPath}/admin/products?page=${page}`;
-      axios.get(url).then((response) => {
-        if (response.data.success) {
-          this.products = response.data.products;
+    async getData(page = 1) {
+      const url = `${this.baseUrl}/${this.apiPath}/admin/products?page=${page}`;
+      try {
+        const res = await axios.get(url);
+        if (res.data.success) {
+          this.products = res.data.products;
         } else {
-          alert(response.data.message);
+          alert(res.data.message);
         }
-      });
+      } catch (error) {
+        alert(error);
+      }
     },
+
     updateProduct() {
       if (this.isNew) {
         this.products.push({
@@ -63,16 +67,19 @@ createApp({
         delProductModal.show();
       }
     },
-    delProduct() {
-      // splice 用法參考
-      // https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-      // findIndex 用法參考
-      // https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
-      this.products.splice(
-        this.products.findIndex((item) => item.id === this.tempProduct.id),
-        1
-      );
-      delProductModal.hide();
+    async delProduct() {
+      const url = `${this.baseUrl}/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+      try {
+        const res = await axios.delete(url);
+        if (res.data.success) {
+          this.getData();
+          delProductModal.hide();
+        } else {
+          alert(res.data.message);
+        }
+      } catch (error) {
+        alert(error);
+      }
     },
     createImages() {
       this.tempProduct.imagesUrl = [];
@@ -80,18 +87,10 @@ createApp({
     },
   },
   mounted() {
-    productModal = new bootstrap.Modal(
-      document.getElementById("productModal"),
-      {
-        keyboard: false,
-      }
-    );
+    productModal = new bootstrap.Modal(document.getElementById("productModal"));
 
     delProductModal = new bootstrap.Modal(
-      document.getElementById("delProductModal"),
-      {
-        keyboard: false,
-      }
+      document.getElementById("delProductModal")
     );
 
     // 取出 Token
@@ -99,13 +98,11 @@ createApp({
       /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    if (token === "") {
-      alert("您尚未登入請重新登入。");
-      window.location = "login.html";
+    if (!Boolean(token)) {
+      alert("請確實進行登入。");
+      window.location.assign("login.html");
     }
-
-    axios.defaults.headers.common.Authorization = token;
-
+    axios.defaults.headers.common["Authorization"] = token;
     this.getData();
   },
 }).mount("#app");
