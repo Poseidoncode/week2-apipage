@@ -29,31 +29,41 @@ createApp({
         alert(error);
       }
     },
-
-    updateProduct() {
-      if (this.isNew) {
-        this.products.push({
-          id: Date.now(),
-          ...this.tempProduct,
-        });
-
-        this.tempProduct = {
-          imagesUrl: [],
-        };
-        productModal.hide();
-      } else {
-        // findIndex 用法參考
-        // https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
-        const index = this.products.findIndex(
-          (item) => item.id === this.tempProduct.id
-        );
-        this.products[index] = this.tempProduct;
-        productModal.hide();
+    async renewProduct() {
+      const obj = {};
+      obj.data = { ...this.tempProduct };
+      obj.data.price = +this.tempProduct.price;
+      obj.data.origin_price = +this.tempProduct.origin_price;
+      const url = this.isNew
+        ? `${this.baseUrl}/${this.apiPath}/admin/product`
+        : `${this.baseUrl}/${this.apiPath}/admin/product/${this.tempProduct.id}`;
+      try {
+        const res = this.isNew
+          ? await axios.post(url, obj)
+          : await axios.put(url, obj);
+        if (res.data.success) {
+          this.getData();
+          productModal.hide();
+          this.isNew ? alert("新增成功") : alert("修改成功");
+        } else {
+          alert(res.data.message);
+        }
+      } catch (error) {
+        alert(error);
       }
     },
     openModal(isNew, item) {
       if (isNew === "new") {
         this.tempProduct = {
+          title: "",
+          category: "",
+          origin_price: 0,
+          price: 0,
+          unit: "",
+          description: "",
+          content: "",
+          is_enabled: false,
+          imageUrl: "",
           imagesUrl: [],
         };
         this.isNew = true;
@@ -82,9 +92,12 @@ createApp({
         alert(error);
       }
     },
-    createImages() {
-      this.tempProduct.imagesUrl = [];
-      this.tempProduct.imagesUrl.push("");
+    addNewImage() {
+      this.tempProduct.imagesUrl.push(this.tempProduct.imageUrl);
+      this.tempProduct.imageUrl = "";
+    },
+    removeImage() {
+      this.tempProduct.imagesUrl.shift();
     },
   },
   mounted() {
