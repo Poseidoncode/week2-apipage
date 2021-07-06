@@ -73,7 +73,10 @@ createApp({
         this.isNew = true;
         productModal.show();
       } else if (isNew === "edit") {
-        this.tempProduct = { ...item };
+        this.tempProduct = JSON.parse(JSON.stringify(item));
+        !Boolean(this.tempProduct.imagesUrl)
+          ? (this.tempProduct.imagesUrl = [])
+          : "";
         this.isNew = false;
         productModal.show();
       } else if (isNew === "delete") {
