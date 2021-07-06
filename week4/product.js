@@ -13,6 +13,7 @@ createApp({
       tempProduct: {
         imagesUrl: [],
       },
+      pagination: {},
     };
   },
   methods: {
@@ -21,9 +22,12 @@ createApp({
       try {
         const res = await axios.get(url);
         if (res.data.success) {
-          this.products = res.data.products;
+          const { products, pagination } = res.data;
+          this.products = products;
+          this.pagination = pagination;
         } else {
           alert(res.data.message);
+          window.location = "index.html";
         }
       } catch (error) {
         alert(error);
