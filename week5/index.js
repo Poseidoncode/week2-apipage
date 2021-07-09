@@ -46,6 +46,7 @@ Vue.createApp({
     ErrorMessage: ErrorMessage,
   },
   methods: {
+    //取得全部產品內容
     getProducts() {
       const url = `${apiUrl}/api/${apiPath}/products`;
       axios.get(url).then((response) => {
@@ -57,6 +58,7 @@ Vue.createApp({
         }
       });
     },
+    //取得單一產品內容
     getProduct(id) {
       const url = `${apiUrl}/api/${apiPath}/product/${id}`;
       this.loadingStatus.loadingItem = id;
@@ -70,6 +72,7 @@ Vue.createApp({
         }
       });
     },
+    //加入產品到購物車
     addToCart(id, qty = 1) {
       const url = `${apiUrl}/api/${apiPath}/cart`;
       this.loadingStatus.loadingItem = id;
@@ -89,6 +92,7 @@ Vue.createApp({
         }
       });
     },
+    //更新購物車內容
     updateCart(data) {
       this.loadingStatus.loadingItem = data.id;
       const url = `${apiUrl}/api/${apiPath}/cart/${data.id}`;
@@ -107,6 +111,7 @@ Vue.createApp({
         }
       });
     },
+    //刪除全部購物車內容
     deleteAllCarts() {
       const url = `${apiUrl}/api/${apiPath}/carts`;
       axios.delete(url).then((response) => {
@@ -118,6 +123,7 @@ Vue.createApp({
         }
       });
     },
+    //取得購物車
     getCart() {
       const url = `${apiUrl}/api/${apiPath}/cart`;
       axios.get(url).then((response) => {
@@ -128,6 +134,7 @@ Vue.createApp({
         }
       });
     },
+    //移除購物車單一項目
     removeCartItem(id) {
       const url = `${apiUrl}/api/${apiPath}/cart/${id}`;
       this.loadingStatus.loadingItem = id;
@@ -141,12 +148,14 @@ Vue.createApp({
         }
       });
     },
+    //產生訂單，重置購物車和表單內容
     createOrder() {
       const url = `${apiUrl}/api/${apiPath}/order`;
       const order = this.form;
       axios.post(url, { data: order }).then((response) => {
         if (response.data.success) {
           alert(response.data.message);
+          //重置規則
           this.$refs.form.resetForm();
           this.getCart();
         } else {
